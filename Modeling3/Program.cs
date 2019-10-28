@@ -14,7 +14,7 @@ namespace Modeling3
         {
             var creator = new Creator(creatorDelay);
 
-            var process1 = new Process("process1", processDelay, processMaxQueue, 3);
+            var process1 = new Process("process1", processDelay, processMaxQueue, 2);
             var process2 = new Process("process2", processDelay * 3, processMaxQueue, 2);
             var process3 = new Process("process3", processDelay * 7, processMaxQueue, 1);
             var process4 = new Process("process4", processDelay * 10, processMaxQueue, 1);

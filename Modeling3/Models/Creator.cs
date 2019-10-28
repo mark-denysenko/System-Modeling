@@ -9,7 +9,9 @@ namespace Modeling3.Models
         public override void outAct()
         {
             base.outAct();
+
             tnext = tcurr + getDelay();
+
             nextElement.inAct();
         }
     }

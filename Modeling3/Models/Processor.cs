@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Modeling3.Models
 {
@@ -24,6 +22,7 @@ namespace Modeling3.Models
         public override void outAct()
         {
             base.outAct();
+
             tnext = double.MaxValue;
             state = ProcessState.Idle;
         }

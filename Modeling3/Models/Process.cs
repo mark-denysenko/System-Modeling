@@ -24,6 +24,18 @@ namespace Modeling3.Models
             }
         }
 
+        public override double tcurr
+        {
+            get => processors.FirstOrDefault()?.tcurr ?? default(double);
+            set
+            {
+                foreach(var proc in processors)
+                {
+                    proc.tcurr = value;
+                }
+            }
+        }
+
         private IEnumerable<Processor> processors;
 
         public Process(double delay): this("process", delay, 5, 1) { }
@@ -35,7 +47,7 @@ namespace Modeling3.Models
             var procList = new List<Processor>(processors);
             for(int i = 0; i < processors; i++)
             {
-                procList.Add(new Processor(name, 0));
+                procList.Add(new Processor(name, delay));
             }
 
             this.processors = procList;
@@ -53,7 +65,7 @@ namespace Modeling3.Models
             {
                 if (queue < maxqueue)
                 {
-                    queue = queue + 1;
+                    queue++;
                     workingMaxQueue = workingMaxQueue < queue ? queue : workingMaxQueue;
                 }
                 else
@@ -61,49 +73,27 @@ namespace Modeling3.Models
                     failure++;
                 }
             }
-
-            //if (state == ProcessState.Idle)
-            //{
-            //    state = ProcessState.Work;
-            //    tnext = tcurr + getDelay();
-            //}
-            //else
-            //{
-            //    if (queue < maxqueue)
-            //    {
-            //        queue = queue + 1;
-            //        workingMaxQueue = workingMaxQueue < queue ? queue : workingMaxQueue;
-            //    }
-            //    else
-            //    {
-            //        failure++;
-            //    }
-            //}
         }
 
         public override void outAct()
         {
             base.outAct();
 
-            var finishedProcc = processors.FirstOrDefault(proc => proc.tnext == tnext);
-            if (finishedProcc != null)
+            var finishedProcceses = processors.Where(proc => proc.tnext == tnext).ToList();
+            if (finishedProcceses.Any())
             {
-                finishedProcc.outAct();
-
-                //tnext = double.MaxValue;
-                //state = ProcessState.Idle;
-
-                if (queue > 0)
+                foreach (var proc in finishedProcceses)
                 {
-                    //queue = queue - 1;
-                    //state = ProcessState.Work;
-                    //tnext = tcurr + getDelay();
+                    proc.outAct();
 
-                    finishedProcc.inAct();
+                    if (queue > 0)
+                    {
+                        proc.inAct();
+                        queue--;
+                    }
+                    nextElement.inAct();
                 }
             }
-
-            nextElement.inAct();
         }
 
         public override void printInfo()

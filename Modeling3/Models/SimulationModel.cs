@@ -20,30 +20,26 @@ namespace Modeling3.Models
             while (tcurr < simulateTime)
             {
                 tnext = double.MaxValue;
+
                 Element currentElement = elements.FirstOrDefault();
                 foreach (var e in elements)
                 {
                     if (e.tnext < tnext)
                     {
-                        currentElement = e;
+                        //currentElement = e;
                         tnext = e.tnext;
                     }
                 }
 
+                double deltaTime = tnext - tcurr;
+                tcurr = tnext;
+
                 //Console.WriteLine("It's time for event in " + currentElement?.name + ", time = " + tnext);
                 foreach (var e in elements)
                 {
-                    e.doStatistics(tnext - tcurr);
-                }
-                tcurr = tnext;
-                foreach (var e in elements)
-                {
+                    e.doStatistics(deltaTime);
                     e.tcurr = tcurr;
-                }
 
-                currentElement?.outAct();
-                foreach (var e in elements)
-                {
                     if (e.tnext == tcurr)
                     {
                         e.outAct();
@@ -69,9 +65,8 @@ namespace Modeling3.Models
 
             int maxQueue = 0;
             double avgQueue = 0.0f;
-
-            double maxHighload = 0.0;
             double avgHighload = 0.0;
+
             foreach (var e in elements)
             {
                 //e.printResult();

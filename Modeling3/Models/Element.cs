@@ -36,7 +36,7 @@ namespace Modeling3.Models
 
         public virtual void outAct()
         {
-            quantity += 1;
+            quantity++;
         }
 
         public virtual void doStatistics(double delta) { }

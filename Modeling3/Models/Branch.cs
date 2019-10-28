@@ -19,88 +19,9 @@ namespace Modeling3.Models
             this.possibleElements = PercentToPercent(possibleElements);
         }
 
-        public override int quantity => nextElement?.quantity ?? 0;
-
-        public override int id
-        {
-            get => nextElement?.id ?? -1;
-            set
-            {
-                if (nextElement != null)
-                    nextElement.id = value;
-            }
-        }
-
-        public override string name
-        {
-            get => nextElement?.name;
-            set
-            {
-                if (nextElement != null)
-                    nextElement.name = value;
-            }
-        }
-
-        public override double delayMean
-        {
-            get => nextElement?.delayMean ?? default(double);
-            set
-            {
-                if (nextElement != null)
-                    nextElement.delayMean = value;
-            }
-        }
-
-        public override double tnext
-        {
-            get => nextElement?.tnext ?? default(double);
-            set
-            {
-                if (nextElement != null)
-                    nextElement.tnext = value;
-            }
-        }
-
-        public override double tcurr
-        {
-            get => nextElement?.tcurr ?? default(double);
-            set
-            {
-                if (nextElement != null)
-                    nextElement.tcurr = value;
-            }
-        }
-
         public override void inAct()
         {
             GetNextElement().inAct();
-            //if (nextElement is null)
-            //{
-            //}
-
-            //nextElement.inAct();
-        }
-
-        public override void outAct()
-        {
-            nextElement?.outAct();
-
-            nextElement = null;
-        }
-
-        public override void printInfo()
-        {
-            nextElement?.printInfo();
-        }
-
-        public override void printResult()
-        {
-            nextElement?.printResult();
-        }
-
-        public override void doStatistics(double delta)
-        {
-            nextElement?.doStatistics(delta);
         }
 
         private Element GetNextElement()
