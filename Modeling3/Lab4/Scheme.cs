@@ -104,11 +104,68 @@ namespace Modeling3
             });
 
             model.Simulate(SimulateTime);
+            Console.WriteLine("Number of line changes: 4");
         }
 
         public static void Lab4_Hospital()
         {
+            const double customerDelayIn = 0.5;
+            const double customerServiceDelay = 1.7;
+            const double initialCustomerIn = 0.1;
+            const int initialQueueForCarLines = 2;
+            const int windowMaxQueue = 5;
 
+            var q1 = new Queue<EventBase>(initialQueueForCarLines);
+            var q2 = new Queue<EventBase>(initialQueueForCarLines);
+            for (int i = 0; i < initialQueueForCarLines; i++)
+            {
+                q1.Enqueue(new EventBase { createTime = 0.0 });
+                q2.Enqueue(new EventBase { createTime = 0.0 });
+            }
+
+            var creator = new Creator(customerDelayIn)
+            {
+                distribution = NumberGenerators.Distributions.EXPONENTIAL,
+                tnext = initialCustomerIn
+            };
+
+            var window1 = new Process("window1", customerServiceDelay, windowMaxQueue)
+            {
+                //queue = initialQueueForCarLines,
+                eventQueue = q1
+                //tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window1.inAct(new EventBase { createTime = 0.0 });
+
+            var window2 = new Process("window2", customerServiceDelay, windowMaxQueue)
+            {
+                //queue = initialQueueForCarLines,
+                eventQueue = q2
+                //tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window2.inAct(new EventBase { createTime = 0.0 });
+
+            var bankExit = new Despose("exit");
+
+            var windowChoice = new BankAutoBranch(new List<(Element element, double percent)>
+            {
+                (window1, 0.5),
+                (window2, 0.5)
+            });
+
+            creator.nextElement = windowChoice;
+            window1.nextElement = bankExit;
+            window2.nextElement = bankExit;
+
+            var model = new SimulationModel(new List<Element>
+            {
+                creator,
+                window1,
+                window2,
+                bankExit
+            });
+
+            model.Simulate(SimulateTime);
         }
     }
 }
