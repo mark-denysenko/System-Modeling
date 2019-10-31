@@ -1,0 +1,150 @@
+﻿using Modeling3.Lab4;
+using Modeling3.Models;
+using System;
+using System.Collections.Generic;
+
+namespace Modeling3
+{
+    partial class Scheme
+    {
+        public static void Lab4_Test_Example()
+        {
+            var creator = new Creator(2d);
+
+            var process1 = new Process("process1", 0.6);
+            var process2 = new Process("process2", 0.3);
+            var process3 = new Process("process3", 0.4);
+            var process4 = new Process("process4", 0.1, processors: 2);
+
+            var despose1 = new Despose("despose1");
+
+            var branch1 = new Branch(new List<(Element element, double percent)>
+            {
+                (despose1, 0.42),
+                (process2, 0.15),
+                (process3, 0.13),
+                (process4, 0.30)
+            });
+
+            creator.nextElement = process1;
+            process1.nextElement = branch1;
+            process2.nextElement = process1;
+            process3.nextElement = process1;
+            process4.nextElement = process1;
+
+            var model = new SimulationModel(new List<Element>
+            {
+                creator,
+                process1,
+                process2,
+                process3,
+                process4,
+                despose1
+            });
+
+            model.Simulate(SimulateTime);
+        }
+
+        public static void Lab4_Bank()
+        {
+            const double customerDelayIn = 0.5;
+            const double customerServiceDelay = 0.3;
+            const double initialCustomerIn = 0.1;
+            const int initialQueueForCarLines = 2;
+            const int windowMaxQueue = 3;
+
+            var creator = new Creator(customerDelayIn)
+            {
+                distribution = NumberGenerators.Distributions.EXPONENTIAL,
+                tnext = initialCustomerIn
+            };
+
+            var window1 = new Process("window1", customerServiceDelay, windowMaxQueue)
+            {
+                queue = initialQueueForCarLines,
+                //tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window1.inAct();
+
+            var window2 = new Process("window2", customerServiceDelay, windowMaxQueue)
+            {
+                queue = initialQueueForCarLines,
+                //tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window2.inAct();
+
+            var bankExit = new Despose("exit");
+
+            var windowChoice = new BankAutoBranch(new List<(Element element, double percent)>
+            {
+                (window1, 0.5),
+                (window2, 0.5)
+            });
+
+            creator.nextElement = windowChoice;
+            window1.nextElement = bankExit;
+            window2.nextElement = bankExit;
+
+            var model = new SimulationModel(new List<Element>
+            {
+                creator,
+                window1,
+                window2,
+                bankExit
+            });
+
+            model.Simulate(SimulateTime);
+        }
+
+        public static void Lab4_Hospital()
+        {
+            const double customerDelayIn = 0.5;
+            const double customerServiceDelay = 0.3;
+            const double initialCustomerIn = 0.1;
+            const int initialQueueForCarLines = 2;
+            const int windowMaxQueue = 3;
+
+            var creator = new Creator(customerDelayIn)
+            {
+                distribution = NumberGenerators.Distributions.EXPONENTIAL,
+                tnext = initialCustomerIn
+            };
+
+            var window1 = new Process("window1", customerServiceDelay, windowMaxQueue)
+            {
+                queue = initialQueueForCarLines,
+                tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window1.inAct();
+
+            var window2 = new Process("window2", customerServiceDelay, windowMaxQueue)
+            {
+                queue = initialQueueForCarLines,
+                tnext = NumberGenerators.RandomNumberGenerators.Normal(1d, 0.3)
+            };
+            window2.inAct();
+
+            var bankExit = new Despose("exit");
+
+            var windowChoice = new BankAutoBranch(new List<(Element element, double percent)>
+            {
+                (window1, 0.5),
+                (window2, 0.5)
+            });
+
+            creator.nextElement = windowChoice;
+            window1.nextElement = bankExit;
+            window2.nextElement = bankExit;
+
+            var model = new SimulationModel(new List<Element>
+            {
+                creator,
+                window1,
+                window2,
+                bankExit
+            });
+
+            model.Simulate(SimulateTime);
+        }
+    }
+}

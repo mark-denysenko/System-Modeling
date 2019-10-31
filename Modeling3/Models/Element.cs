@@ -13,7 +13,7 @@ namespace Modeling3.Models
         public virtual double delayDev { get; set; }
         public virtual int quantity { get; private set; }
         public ProcessState state { get; set; } = ProcessState.Idle;
-        protected Distributions distribution { get; set; } = Distributions.EXPONENTIAL;
+        public Distributions distribution { get; set; } = Distributions.EXPONENTIAL;
 
         public Element nextElement { get; set; }
 

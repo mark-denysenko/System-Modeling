@@ -38,9 +38,9 @@ namespace Modeling3.Models
 
         private IEnumerable<Processor> processors;
 
-        public Process(double delay): this("process", delay, 5, 1) { }
+        public Process(double delay): this("process", delay) { }
 
-        public Process(string name, double delay, int maxQueue, int processors): base(name, delay)
+        public Process(string name, double delay, int maxQueue = int.MaxValue, int processors = 1): base(name, delay)
         {
             this.maxqueue = maxQueue;
 
@@ -79,7 +79,7 @@ namespace Modeling3.Models
         {
             base.outAct();
 
-            var finishedProcceses = processors.Where(proc => proc.tnext == tnext).ToList();
+            var finishedProcceses = processors.Where(proc => proc.tnext <= tnext).ToList();
             if (finishedProcceses.Any())
             {
                 foreach (var proc in finishedProcceses)

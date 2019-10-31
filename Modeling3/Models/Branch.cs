@@ -7,7 +7,7 @@ namespace Modeling3.Models
 {
     public class Branch : Element
     {
-        private IList<(Element element, double probability)> possibleElements;
+        protected IList<(Element element, double probability)> possibleElements;
 
         public Branch(IList<(Element element, int weight)> possibleElements) : base("branch", 0)
         {
@@ -24,7 +24,7 @@ namespace Modeling3.Models
             GetNextElement().inAct();
         }
 
-        private Element GetNextElement()
+        protected Element GetNextElement()
         {
             double diceRoll = RandomNumberGenerators.Uniform(0, 1);
 
