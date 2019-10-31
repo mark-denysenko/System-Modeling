@@ -9,18 +9,18 @@ namespace Modeling3.Lab4
     {
         public BankAutoBranch(IList<(Element element, double percent)> possibleElements) : base(possibleElements) { }
 
-        public override void inAct()
+        public override void inAct(EventBase e)
         {
             var first = possibleElements[0].element as Process;
             var second = possibleElements[1].element as Process;
 
-            if (first.queue == second.queue || first.queue < second.queue)
+            if (first.eventQueue.Count == second.eventQueue.Count || first.eventQueue.Count < second.eventQueue.Count)
             {
-                first.inAct();
+                first.inAct(e);
             }
             else
             {
-                second.inAct();
+                second.inAct(e);
             }
         }
     }

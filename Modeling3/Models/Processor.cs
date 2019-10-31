@@ -10,8 +10,10 @@ namespace Modeling3.Models
 
         public Processor(string name, double delay) : base(name, delay) { }
 
-        public override void inAct()
+        public override void inAct(EventBase e)
         {
+            base.inAct(e);
+
             if (state == ProcessState.Idle)
             {
                 state = ProcessState.Work;
@@ -19,12 +21,14 @@ namespace Modeling3.Models
             }
         }
 
-        public override void outAct()
+        public override EventBase outAct()
         {
-            base.outAct();
+            var e = base.outAct();
 
             tnext = double.MaxValue;
             state = ProcessState.Idle;
+
+            return e;
         }
 
         public override void printInfo()

@@ -6,13 +6,14 @@ namespace Modeling3.Models
 {
     public class Process : Element
     {
-        public int queue { get; set; } = 0;
         public int maxqueue { get; set; } = int.MaxValue;
         public int failure { get; private set; } = 0;
         public double meanQueue { get; private set; } = 0.0;
 
         public double workingTime { get; set; } = 0.0;
         public int workingMaxQueue { get; private set; } = 0;
+
+        public Queue<EventBase> eventQueue;
 
         public override double tnext
         {
@@ -43,6 +44,7 @@ namespace Modeling3.Models
         public Process(string name, double delay, int maxQueue = int.MaxValue, int processors = 1): base(name, delay)
         {
             this.maxqueue = maxQueue;
+            eventQueue = new Queue<EventBase>(maxQueue);
 
             var procList = new List<Processor>(processors);
             for(int i = 0; i < processors; i++)
@@ -53,20 +55,20 @@ namespace Modeling3.Models
             this.processors = procList;
         }
 
-        public override void inAct()
+        public override void inAct(EventBase e)
         {
             var freeProcc = processors.FirstOrDefault(proc => proc.state == ProcessState.Idle);
 
             if(freeProcc != null)
             {
-                freeProcc.inAct();
+                freeProcc.inAct(e);
             }
             else
             {
-                if (queue < maxqueue)
+                if (eventQueue.Count < maxqueue)
                 {
-                    queue++;
-                    workingMaxQueue = workingMaxQueue < queue ? queue : workingMaxQueue;
+                    eventQueue.Enqueue(e);
+                    workingMaxQueue = workingMaxQueue < eventQueue.Count ? eventQueue.Count : workingMaxQueue;
                 }
                 else
                 {
@@ -75,25 +77,29 @@ namespace Modeling3.Models
             }
         }
 
-        public override void outAct()
+        public override EventBase outAct()
         {
             base.outAct();
 
             var finishedProcceses = processors.Where(proc => proc.tnext <= tnext).ToList();
+            EventBase e = null;
+
             if (finishedProcceses.Any())
             {
                 foreach (var proc in finishedProcceses)
                 {
-                    proc.outAct();
+                    e = proc.outAct();
 
-                    if (queue > 0)
+                    if (eventQueue.Count > 0)
                     {
-                        proc.inAct();
-                        queue--;
+                        proc.inAct(eventQueue.Dequeue());
                     }
-                    nextElement.inAct();
+                    nextElement.inAct(e);
+
                 }
             }
+
+            return e;
         }
 
         public override void printInfo()
@@ -104,7 +110,7 @@ namespace Modeling3.Models
 
         public override void doStatistics(double delta)
         {
-            meanQueue = meanQueue + queue * delta;
+            meanQueue = meanQueue + eventQueue.Count * delta;
 
             if (processors.Any(p => p.state == ProcessState.Work))
             {

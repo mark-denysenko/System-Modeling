@@ -6,13 +6,16 @@ namespace Modeling3.Models
     {
         public Creator(double delay): base("creator", delay) { }
 
-        public override void outAct()
+        public override EventBase outAct()
         {
             base.outAct();
 
             tnext = tcurr + getDelay();
 
-            nextElement.inAct();
+            var newEvent = new EventBase { createTime = tcurr };
+            nextElement.inAct(newEvent);
+
+            return newEvent;
         }
     }
 }

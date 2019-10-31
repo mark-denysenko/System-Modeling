@@ -19,9 +19,9 @@ namespace Modeling3.Models
             this.possibleElements = PercentToPercent(possibleElements);
         }
 
-        public override void inAct()
+        public override void inAct(EventBase e)
         {
-            GetNextElement().inAct();
+            GetNextElement().inAct(e);
         }
 
         protected Element GetNextElement()

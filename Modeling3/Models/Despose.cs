@@ -11,8 +11,9 @@ namespace Modeling3.Models
             tnext = double.MaxValue;
         }
 
-        public override void inAct()
+        public override void inAct(EventBase e)
         {
+            e.finishTime = tcurr;
             outAct();
         }
     }

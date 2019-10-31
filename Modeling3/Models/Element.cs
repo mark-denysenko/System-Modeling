@@ -16,6 +16,7 @@ namespace Modeling3.Models
         public Distributions distribution { get; set; } = Distributions.EXPONENTIAL;
 
         public Element nextElement { get; set; }
+        public EventBase currentEvent { get; set; }
 
         private static int nextId = 0;
 
@@ -32,11 +33,15 @@ namespace Modeling3.Models
             nextId++;
         }
 
-        public virtual void inAct() { }
+        public virtual void inAct(EventBase e = null)
+        {
+            currentEvent = e;
+        }
 
-        public virtual void outAct()
+        public virtual EventBase outAct()
         {
             quantity++;
+            return currentEvent;
         }
 
         public virtual void doStatistics(double delta) { }
