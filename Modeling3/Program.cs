@@ -14,13 +14,13 @@ namespace Modeling3
             Console.WriteLine("======================= Lab 4 =======================");
 
             Console.WriteLine("\n----- Test Example -----");
-            //Scheme.Lab4_Test_Example();
+            Scheme.Lab4_Test_Example();
 
             Console.WriteLine("\n----- Bank Simulation -----");
             Scheme.Lab4_Bank();
 
-            Console.WriteLine("\n----- Hospital Simulation -----");
-            Scheme.Lab4_Hospital();
+            //Console.WriteLine("\n----- Hospital Simulation -----");
+            //Scheme.Lab4_Hospital();
 
             Console.ReadKey();
         }

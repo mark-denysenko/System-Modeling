@@ -16,10 +16,15 @@ namespace Modeling3
 
             var creator = new Creator(creatorDelay);
 
-            var process1 = new Process("process1", processDelay, processMaxQueue, 2);
-            var process2 = new Process("process2", processDelay * 3, processMaxQueue, 2);
-            var process3 = new Process("process3", processDelay * 7, processMaxQueue, 1);
-            var process4 = new Process("process4", processDelay * 10, processMaxQueue, 1);
+            //var process1 = new Process("process1", processDelay, processMaxQueue, 2);
+            //var process2 = new Process("process2", processDelay * 3, processMaxQueue, 2);
+            //var process3 = new Process("process3", processDelay * 7, processMaxQueue, 1);
+            //var process4 = new Process("process4", processDelay * 10, processMaxQueue, 1);
+
+            var process1 = new Process("process1", processDelay, processMaxQueue, 1);
+            var process2 = new Process("process2", processDelay, processMaxQueue, 1);
+            var process3 = new Process("process3", processDelay, processMaxQueue, 1);
+            var process4 = new Process("process4", processDelay, processMaxQueue, 1);
 
             var despose1 = new Despose("despose1");
             var despose2 = new Despose("despose2");
@@ -42,9 +47,11 @@ namespace Modeling3
                 process4,
                 despose1,
                 despose2
-            });
+            },
+            SimulateTime);
 
-            model.Simulate(SimulateTime);
+            model.Simulate(false);
+            model.PrintResultStatistic();
         }
     }
 }

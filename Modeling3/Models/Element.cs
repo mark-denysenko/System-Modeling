@@ -5,20 +5,16 @@ namespace Modeling3.Models
 {
     public abstract class Element
     {
-        public virtual int id { get; set; }
         public virtual string name { get; set; }
         public virtual double tcurr { get; set; } = 0.0;
         public virtual double tnext { get; set; } = 0.0;
         public virtual double delayMean { get; set; }
         public virtual double delayDev { get; set; }
         public virtual int quantity { get; private set; }
-        public ProcessState state { get; set; } = ProcessState.Idle;
         public Distributions distribution { get; set; } = Distributions.EXPONENTIAL;
 
         public Element nextElement { get; set; }
         public EventBase currentEvent { get; set; }
-
-        private static int nextId = 0;
 
         public Element(): this(1.0) { }
 
@@ -27,10 +23,7 @@ namespace Modeling3.Models
         public Element(string nameOfElement, double delay = 1.0)
         {
             delayMean = delay;
-            id = nextId;
-            name = nameOfElement + "_" + id;
-
-            nextId++;
+            name = nameOfElement;
         }
 
         public virtual void inAct(EventBase e = null)
@@ -53,7 +46,7 @@ namespace Modeling3.Models
 
         public virtual void printInfo()
         {
-            Console.WriteLine(name + " state = " + state + " quantity = " + quantity + " tnext = " + tnext);
+            Console.WriteLine(name + " quantity = " + quantity + " tnext = " + tnext);
         }
 
         public double getDelay()

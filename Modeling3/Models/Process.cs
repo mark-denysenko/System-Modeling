@@ -13,6 +13,8 @@ namespace Modeling3.Models
         public double workingTime { get; set; } = 0.0;
         public int workingMaxQueue { get; private set; } = 0;
 
+        public bool IsAnyProcessorFree => processors.Any(p => p.state == ProcessState.Idle);
+
         public Queue<EventBase> eventQueue;
 
         public override double tnext
@@ -37,11 +39,11 @@ namespace Modeling3.Models
             }
         }
 
-        private IEnumerable<Processor> processors;
+        protected IEnumerable<Processor> processors;
 
         public Process(double delay): this("process", delay) { }
 
-        public Process(string name, double delay, int maxQueue = int.MaxValue, int processors = 1): base(name, delay)
+        public Process(string name, double delay, int maxQueue = 10, int processors = 1): base(name, delay)
         {
             this.maxqueue = maxQueue;
             eventQueue = new Queue<EventBase>(maxQueue);

@@ -10,23 +10,24 @@ namespace Modeling3.Models
         private double tnext = 0.0;
         private double tcurr = 0.0;
 
-        public SimulationModel(IEnumerable<Element> elements)
+        public double SimulateTime { get; private set; }
+
+        public SimulationModel(IEnumerable<Element> elements, double simulateTime)
         {
             this.elements = elements;
+            SimulateTime = simulateTime;
         }
 
-        public void Simulate(double simulateTime)
+        public void Simulate(bool withStepInfo)
         {
-            while (tcurr < simulateTime)
+            while (tcurr < SimulateTime)
             {
                 tnext = double.MaxValue;
 
-                Element currentElement = elements.FirstOrDefault();
                 foreach (var e in elements)
                 {
                     if (e.tnext < tnext)
                     {
-                        //currentElement = e;
                         tnext = e.tnext;
                     }
                 }
@@ -34,7 +35,6 @@ namespace Modeling3.Models
                 double deltaTime = tnext - tcurr;
                 tcurr = tnext;
 
-                //Console.WriteLine("It's time for event in " + currentElement?.name + ", time = " + tnext);
                 foreach (var e in elements)
                 {
                     e.doStatistics(deltaTime);
@@ -45,10 +45,12 @@ namespace Modeling3.Models
                         e.outAct();
                     }
                 }
-                //PrintElementsInfo();
-            }
 
-            PrintResultStatistic(simulateTime);
+                if (withStepInfo)
+                {
+                    PrintElementsInfo();
+                }
+            }
         }
 
         public void PrintElementsInfo()
@@ -59,17 +61,14 @@ namespace Modeling3.Models
             }
         }
 
-        public void PrintResultStatistic(double simulateTime)
+        public void PrintResultStatistic()
         {
-            Console.WriteLine("\n-------------RESULTS-------------");
-
             int maxQueue = 0;
             double avgQueue = 0.0f;
             double avgHighload = 0.0;
 
             foreach (var e in elements)
             {
-                //e.printResult();
                 if (e is Process proc)
                 {
                     if(maxQueue < proc.workingMaxQueue)
@@ -77,12 +76,12 @@ namespace Modeling3.Models
                         maxQueue = proc.workingMaxQueue;
                     }
                     avgQueue += proc.meanQueue / tcurr;
-                    avgHighload += proc.workingTime / simulateTime;
+                    avgHighload += proc.workingTime / SimulateTime;
 
                     Console.WriteLine(e.name);
                     Console.WriteLine("Mean length of queue = " + proc.meanQueue / tcurr);
                     Console.WriteLine("Failure probability  = " + proc.failure / (double)proc.quantity);
-                    Console.WriteLine("Working time = " + proc.workingTime / simulateTime);
+                    Console.WriteLine("Working time = " + proc.workingTime / SimulateTime);
                 }
             }
 

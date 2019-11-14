@@ -40,9 +40,11 @@ namespace Modeling3
                 process3,
                 process4,
                 despose1
-            });
+            },
+            SimulateTime);
 
-            model.Simulate(SimulateTime);
+            model.Simulate(false);
+            model.PrintResultStatistic();
         }
 
         public static void Lab4_Bank()
@@ -67,7 +69,7 @@ namespace Modeling3
                 tnext = initialCustomerIn
             };
 
-            var window1 = new Process("window1", customerServiceDelay, windowMaxQueue)
+            var window1 = new BankProcess("window1", customerServiceDelay, windowMaxQueue)
             {
                 //queue = initialQueueForCarLines,
                 eventQueue = q1
@@ -75,7 +77,7 @@ namespace Modeling3
             };
             window1.inAct(new EventBase { createTime = 0.0 });
 
-            var window2 = new Process("window2", customerServiceDelay, windowMaxQueue)
+            var window2 = new BankProcess("window2", customerServiceDelay, windowMaxQueue)
             {
                 //queue = initialQueueForCarLines,
                 eventQueue = q2
@@ -83,13 +85,16 @@ namespace Modeling3
             };
             window2.inAct(new EventBase { createTime = 0.0 });
 
-            var bankExit = new Despose("exit");
+            var bankExit = new BankDesposer("exit");
 
             var windowChoice = new BankAutoBranch(new List<(Element element, double percent)>
             {
                 (window1, 0.5),
                 (window2, 0.5)
             });
+
+            window1.windowsChoose = windowChoice;
+            window2.windowsChoose = windowChoice;
 
             creator.nextElement = windowChoice;
             window1.nextElement = bankExit;
@@ -101,10 +106,14 @@ namespace Modeling3
                 window1,
                 window2,
                 bankExit
-            });
+            },
+            SimulateTime);
 
-            model.Simulate(SimulateTime);
-            Console.WriteLine("Number of line changes: 4");
+            model.Simulate(false);
+            model.PrintResultStatistic();
+            bankExit.printResult();
+            Console.WriteLine("Average clinets in bank: " + (window1.avgClientInBank + window2.avgClientInBank) / SimulateTime);
+            Console.WriteLine("Number of line changes: " + windowChoice.QueueChanges);
         }
 
         public static void Lab4_Hospital()
@@ -163,9 +172,12 @@ namespace Modeling3
                 window1,
                 window2,
                 bankExit
-            });
+            },
+            SimulateTime);
 
-            model.Simulate(SimulateTime);
+            model.Simulate(false);
+            model.PrintResultStatistic();
+
         }
     }
 }

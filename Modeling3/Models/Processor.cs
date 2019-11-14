@@ -5,6 +5,7 @@ namespace Modeling3.Models
     public class Processor : Element
     {
         public double workingTime { get; set; } = 0.0;
+        public ProcessState state { get; set; } = ProcessState.Idle;
 
         public Processor(double delay) : this("processor", delay) { }
 

@@ -13,7 +13,10 @@ namespace Modeling3.Models
 
         public override void inAct(EventBase e)
         {
-            e.finishTime = tcurr;
+            if(e != null)
+            {
+                e.finishTime = tcurr;
+            }
             outAct();
         }
     }
